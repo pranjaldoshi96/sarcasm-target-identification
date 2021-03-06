@@ -16,5 +16,23 @@ def load_data():
     return sentence, label
 
 
+def annotate_data():
+    sentence, label = load_data()
+
+    for q in zip(sentence, label):
+        s,l = q
+        tags = ' '.join(['O'] * len(s.split()))
+
+        print("--------")
+        print(s)
+        for label in l:
+            slots = label.split()
+            print(slots)
+        print("--------")
+        #print(s)
+        #print(tags, l)
+
+annotate_data()
+
 if __name__ == '__main__':
     sentence, label = load_data()

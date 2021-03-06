@@ -17,6 +17,10 @@ def load_data():
 
 
 def annotate_data():
+    train = open("train.tsv", 'w')
+    train_slot = open("slots.tsv", 'w')
+    #print(slot)
+
     sentence, label = load_data()
 
     for q in zip(sentence, label):
@@ -24,19 +28,11 @@ def annotate_data():
         tags = [0] * len(s.split())
 
         words = s.split()
-        print("--------")
         for label in l:
             if len(label) == 0:
                 continue
             slots = label.split()
-            """
-            if len(slots) == 1:
-                for i in range(len(words)):
-                    if words[i] == slots[0]:
-                        tags[i] = 1
-            else:
-                print(slots)
-            """
+
             seqlen = len(slots)
             for i in range(len(words) - seqlen + 1):
                 match = True
@@ -48,10 +44,12 @@ def annotate_data():
                     tags[i] = 1
                     for k in range(i+1, i + seqlen):
                         tags[k] = 2
-                #print(words[i:i+seqlen])
-        print(s,l)
-        print(tags, l)
-        print("--------")
+
+        slot = ' '.join([str(x) for x in tags]) + '\n'
+        print(s)
+        print(slot)
+        train_slot.write(slot)
+        train.write(s+"\n")
 
 annotate_data()
 

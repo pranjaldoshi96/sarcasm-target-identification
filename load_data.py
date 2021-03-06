@@ -10,7 +10,7 @@ def load_data():
     sentence.append(columns[0])
     label.append(columns[1])
 
-    sentence = [s.lower().replace("<em>", "") for s in sentence]
+    sentence = [s.lower().replace("<em>", "").replace('"',"").replace("?", "").replace(".","").replace(",","") for s in sentence]
     label = [l.lower().split(',') for l in label]
 
     return sentence, label
@@ -21,16 +21,37 @@ def annotate_data():
 
     for q in zip(sentence, label):
         s,l = q
-        tags = ' '.join(['O'] * len(s.split()))
+        tags = [0] * len(s.split())
 
+        words = s.split()
         print("--------")
-        print(s)
         for label in l:
+            if len(label) == 0:
+                continue
             slots = label.split()
-            print(slots)
+            """
+            if len(slots) == 1:
+                for i in range(len(words)):
+                    if words[i] == slots[0]:
+                        tags[i] = 1
+            else:
+                print(slots)
+            """
+            seqlen = len(slots)
+            for i in range(len(words) - seqlen + 1):
+                match = True
+                for j in range(seqlen):
+                    if words[i+j] != slots[j]:
+                        match = False
+                        break
+                if match:
+                    tags[i] = 1
+                    for k in range(i+1, i + seqlen):
+                        tags[k] = 2
+                #print(words[i:i+seqlen])
+        print(s,l)
+        print(tags, l)
         print("--------")
-        #print(s)
-        #print(tags, l)
 
 annotate_data()
 
